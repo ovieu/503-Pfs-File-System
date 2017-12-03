@@ -1,9 +1,6 @@
 package pfsFileSystem;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.RandomAccessFile;
+import java.io.*;
 import java.util.Arrays;
 
 /**
@@ -21,10 +18,15 @@ public class PfsFileSystem {
     private static FsManager fsManager = null;
 
 
+
     public static void main(String args[]) {
-        String rawUserInput;           //the input entered by the user
+        String rawUserInput;       //the input entered by the user
         String userInput[];        //holds the result of splitting the user input
-        String command;             //indicates what command the user intends to execute
+        String command;            //indicates what command the user intends to execute
+        String fileName;           //indicates the file which the user intends to manipulate
+
+        //  the file control blocks
+        Fcb[] fcb = new Fcb[2];
 
         //  make terminal logic
         while (true) {
@@ -56,6 +58,27 @@ public class PfsFileSystem {
 
                 //  end the program if the user enters exit
                 case "put":
+
+                    //  get the file name from the user input
+                    fileName = userInput[1];
+
+
+                    String filePathString = "/home/neo/IdeaProjects/PfsFileSystem/" + fileName;
+                    File writeFileToPfs = new File(filePathString);
+
+                    //  test ---> check if the file exist
+                    if (isFileExist(writeFileToPfs)) {
+                        System.out.println("file exist");
+                    } else {
+                        System.out.println("file does not exist");
+                    }
+
+                    //  test ---> check if the file exist
+                    if (isSpaceAvailable(fsManager,writeFileToPfs)) {
+                        System.out.println("pfs has space");
+                    } else {
+                        System.out.println("pfs is full");
+                    }
 
                     break;
 
@@ -186,4 +209,29 @@ public class PfsFileSystem {
         }
     }
 
+    /**
+     * checks it the file exist or not
+     * @param File object
+     * @return
+     */
+    private static boolean isFileExist(File writeFileToPfs) {
+        if (writeFileToPfs.exists()) {
+            //  test code
+            System.out.println("File exist");
+            return true;
+        } else {
+            System.out.println("File dose not exist");
+            return false;
+        }
+    }
+
+    /**
+     * checks if the file is larger than pfs or not
+     * @param fsManager
+     * @param writeFileToPfs
+     * @return
+     */
+    private static boolean isSpaceAvailable(FsManager fsManager, File writeFileToPfs) {
+        return  writeFileToPfs.length() < (fsManager.availableBlockCount * PFS_BLOCK_SIZE);
+    }
 }
