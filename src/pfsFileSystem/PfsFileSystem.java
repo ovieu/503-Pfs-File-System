@@ -39,5 +39,12 @@ public class PfsFileSystem {
         return inputLine;
     }
 
+    
+    /**
+     * displays the terminal prompt
+     */
+    private static void displayTerminalPrompt() {
+        System.out.print("pfs> ");
+    }
 
 }
