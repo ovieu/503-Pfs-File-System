@@ -37,6 +37,11 @@ public class PfsFileSystem {
                 case "quit":
                     displayExitMessage();
                     return;
+
+                //  notify the user of invalid inputs
+                default:
+                    System.out.println("Invalid Input. Please enter a valid option");
+                    break;
             }
 
         }
