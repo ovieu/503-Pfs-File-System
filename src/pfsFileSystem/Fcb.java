@@ -1,3 +1,5 @@
+package pfsFileSystem;
+
 /**
  * The file control block represents data
  * stored in the file system
@@ -34,7 +36,7 @@ public class Fcb {
      */
     @Override
     public String toString() {
-        return "Fcb{" +
+        return "pfsFileSystem.Fcb{" +
                 "fileName='" + fileName + '\'' +
                 ", fileSize=" + fileSize +
                 ", startBlockId=" + startBlockId +
