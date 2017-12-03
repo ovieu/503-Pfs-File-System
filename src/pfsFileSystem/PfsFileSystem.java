@@ -11,9 +11,33 @@ import java.util.Arrays;
 
 public class PfsFileSystem {
     public static void main(String args[]) {
+        String rawUserInput;           //the input entered by the user
+        String userInput[];        //holds the result of splitting the user input
+        String command;             //indicates what command the user intends to execute
 
-    //  make terminal logic
+        //  make terminal logic
         while (true) {
+
+            displayTerminalPrompt();
+            rawUserInput = getUserInput();
+
+            //  split the user input by whitespace
+            userInput = rawUserInput.split(" ");
+            command = userInput[0];
+
+            //  perform pfs operations based on user entry
+            switch (command) {
+
+                //  end the program if the user enters exit
+                case "exit":
+                    displayExitMessage();
+                    return;
+
+                //  end the program if the user enters quit
+                case "quit":
+                    displayExitMessage();
+                    return;
+            }
 
         }
     }
@@ -39,12 +63,20 @@ public class PfsFileSystem {
         return inputLine;
     }
 
-    
+
     /**
      * displays the terminal prompt
      */
     private static void displayTerminalPrompt() {
         System.out.print("pfs> ");
+    }
+
+    /**
+     * display message
+     */
+    private static void displayExitMessage() {
+        System.out.println();
+        System.out.println("Exiting PFS....");
     }
 
 }
