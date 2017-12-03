@@ -29,6 +29,47 @@ public class Fcb {
     }
 
     /**
+     * dislpays the details of the fcb
+     * @return
+     */
+    @Override
+    public String toString() {
+        return "Fcb{" +
+                "fileName='" + fileName + '\'' +
+                ", fileSize=" + fileSize +
+                ", startBlockId=" + startBlockId +
+                ", endBlockId=" + endBlockId +
+                ", numBlocks=" + numBlocks +
+                ", remarks='" + remarks + '\'' +
+                '}';
+    }
+
+    /**
+     * dislpays the details of the fcb as comma seperated
+     * values. These values are then written to the pfs
+     * @return
+     */
+    public String toStringData() {
+        return getFileName() + "," +
+                getFileSize() + "," +
+                getStartBlockId() + "," +
+                getEndBlockId() + "," +
+                getNumBlocks() + "," +
+                getRemarks() + ",";
+    }
+
+    /**
+     * returns the details of the fcb in byte format
+     * that would be written directly to the pfs
+     * @return
+     */
+    public byte[] toByteData() {
+        byte[] b = toStringData().getBytes();
+        return b;
+    }
+
+
+    /**
      * public getter and setter methods
      * @return
      */
