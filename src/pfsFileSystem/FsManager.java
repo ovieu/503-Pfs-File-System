@@ -1,3 +1,5 @@
+package pfsFileSystem;
+
 import com.sun.org.apache.regexp.internal.RE;
 
 /**
@@ -8,7 +10,7 @@ import com.sun.org.apache.regexp.internal.RE;
 public class FsManager {
 
     /**
-     * Add some constants in the FsManager
+     * Add some constants in the pfsFileSystem.FsManager
      */
     private static final int PFS_BLOCK_SIZE = 256;
     private static final int PFS_FILE_SIZE = 10000;
@@ -38,15 +40,14 @@ public class FsManager {
      */
     @Override
     public String toString() {
-        return "FsManager{" +
-                "availableBlockCount=" + availableBlockCount +
-                ", fcbOneBlockId=" + fcbOneBlockId +
-                ", dataOneStartBlockId=" + dataOneStartBlockId +
-                ", dataOneEndBlockId=" + dataOneEndBlockId +
-                ", fcbTwoBlockId=" + fcbTwoBlockId +
-                ", dataTwoStartBlockId=" + dataTwoStartBlockId +
-                ", dataTwoEndBlockId=" + dataTwoEndBlockId +
-                '}';
+        return "pfsFileSystem.FsManager: {" +  "\n" +
+                "availableBlockCount=" + availableBlockCount + "," + "\n" +
+                "fcbOneBlockId=" + fcbOneBlockId + "," + "\n" +
+                "dataOneStartBlockId=" + dataOneStartBlockId + "," + "\n" +
+                "dataOneEndBlockId=" + dataOneEndBlockId + "," + "\n" +
+                "fcbTwoBlockId=" + fcbTwoBlockId + "," + "\n" +
+                "dataTwoStartBlockId=" + dataTwoStartBlockId + "," + "\n" +
+                "dataTwoEndBlockId=" + dataTwoEndBlockId  + '}';
     }
 
     /**
