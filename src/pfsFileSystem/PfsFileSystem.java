@@ -120,6 +120,8 @@ public class PfsFileSystem {
                             System.out.println(fcb[0].toString());
 
                             //  write fcb to pfs
+                            //  1 - set pointer to the current block
+                            //  reset the pointer to the begining
 
 
                         } else if (fcb[1] == null) {
@@ -245,6 +247,7 @@ public class PfsFileSystem {
        returns the pfs file pointer to zero
     */
     private static void resetFilePointer() {
+        //  reset the file pointer
         pfsFilePointerOffset = 0;
     }
 
