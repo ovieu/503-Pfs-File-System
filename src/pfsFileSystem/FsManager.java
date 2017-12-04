@@ -6,7 +6,6 @@ import com.sun.org.apache.regexp.internal.RE;
  * Keeps track of the location of the
  * data and fcb blocks
  */
-
 public class FsManager {
 
     /**
@@ -151,8 +150,5 @@ public class FsManager {
     int fcbTwoBlockId;
     int dataTwoStartBlockId;
     int dataTwoEndBlockId;
-
-
-
 
 }
