@@ -78,7 +78,6 @@ public class Fcb {
         return b;
     }
 
-
     /**
      * public getter and setter methods
      * @return
@@ -149,7 +148,6 @@ public class Fcb {
 
     /**
      * member varibales
-     *
      */
     private String fileName;
     private int fileSize;

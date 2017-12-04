@@ -1,6 +1,9 @@
 package pfsFileSystem;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
@@ -120,10 +123,18 @@ public class PfsFileSystem {
                             System.out.println(fcb[0].toString());
 
                             //  write fcb to pfs
-                            writeFcbToPFs(pfsFile, fcb[0]);
+                            writeFcbToPFs(_currentFcb, pfsFile, fcb[0]);
 
                             //  ------------------ write data to pfs -----------------
-                            
+                            //  convert file to byte[]
+                            byte[] _dataOneInByte = getDataInBytes(filePathString);
+
+                            //  test the output of the bytes
+                            System.out.println( "the data is: " + Arrays.toString(_dataOneInByte));
+
+                            //  write file to pfs
+                            writeDataInBytesToPfs(pfsFile, fcb[0], _dataOneInByte);
+
                             //  ------------------ write data to fcb -----------------
                         } else if (fcb[1] == null) {
 
@@ -154,6 +165,19 @@ public class PfsFileSystem {
 
                             //  dislay fcb
                             System.out.println(fcb[1].toString());
+
+                            //  write fcb to pfs
+                            writeFcbToPFs(_currentFcb, pfsFile, fcb[1]);
+
+                            //  ------------------ write data to pfs -----------------
+                            //  convert file to byte[]
+                            byte[] _dataTwoInByte = getDataInBytes(filePathString);
+
+                            //  test the output of the bytes
+                            System.out.println( "the data is: " + Arrays.toString(_dataTwoInByte));
+
+                            //  write file to pfs
+                            writeDataInBytesToPfs(pfsFile, fcb[1], _dataTwoInByte);
 
                             //create fcb[1
                         } else {
@@ -207,12 +231,67 @@ public class PfsFileSystem {
         }
     }
 
+    private static void writeDataInBytesToPfs(RandomAccessFile pfsFile,
+                                              Fcb fcb,
+                                              byte[] dataOneInByte) {
+        resetFilePointer();
+
+        //movePointerTo block
+        try {
+            pfsFile.seek((long) fcb.getStartBlockId() * PFS_BLOCK_SIZE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        //  write data to pfs
+        try {
+            pfsFile.write(dataOneInByte);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        resetFilePointer();
+    }
+
+    /**
+     * converts a file to byte[]
+     * @param writeFileToPfs
+     * @return
+     */
+    private static byte[] getDataInBytes(String filePath) {
+        /*
+        byte[] bFile = Files.readAllBytes(new File(filePath).toPath());
+//or this
+        byte[] bFile = Files.readAllBytes(Paths.get(filePath));
+        */
+
+        Path path = Paths.get(filePath);
+        byte[] data = null;
+        try {
+            data = Files.readAllBytes(new File(filePath).toPath());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return data;
+    }
+
     /*
         writes the value of the fcb to the pfs file
      */
-    private static void writeFcbToPFs(RandomAccessFile pfsFile, Fcb fcb) {
+    private static void writeFcbToPFs(int _currentFcb, RandomAccessFile pfsFile, Fcb fcb) {
         resetFilePointer();
-        movePointerToFcbBlock(pfsFile);
+        //  insert an if statement here for block one or two
+        int _blockNum = 0;
+        if (_currentFcb == BLOCK_ONE) {
+             _blockNum = BLOCK_ONE;
+        } else {
+            _blockNum = BLOCK_TWO;
+        }
+        try {
+            pfsFile.seek((long) _blockNum * PFS_BLOCK_SIZE);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         writeDataToPfsBlock(fcb);
         resetFilePointer();
     }
@@ -384,7 +463,9 @@ public class PfsFileSystem {
      * @param _numBlocks
      * @return
      */
-    private static int allocateEndBlockId(int _currentBlock, int _numBlocks, int _startBlockid_2) {
+    private static int allocateEndBlockId(int _currentBlock,
+                                          int _numBlocks,
+                                          int _startBlockid_2) {
         if (_currentBlock == BLOCK_ONE) {
             return 3 + _numBlocks;
         } else if (_currentBlock == BLOCK_TWO) {
