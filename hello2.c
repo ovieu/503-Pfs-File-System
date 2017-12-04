@@ -74,31 +74,6 @@ static int getExecutablesInDirectory(const struct dirent *currDirectory)
     //  assign the contents o
     int i = 0;
     int charCount = 0;
-
-    //  check if the current file is an executable file
-    //  file is executable if it contains the postfix ".out"
-
-    for ( i = 0; charAtIndex[i] != '\0'; i++) {
-        if (charAtIndex[i] =='.' || charCount>0) {
-            execFile[charCount]=charAtIndex[i];
-            charCount++;
-        }
-    }
-
-    execFile[charCount]='\0';
-
-    if(fileLength >= 0)
-    {
-        if(charCount==0)
-        {
-            return 1;
-        }
-        else if (strncmp(execFile, ".out",4) == 0)
-        {
-            return 1;
-        }
-    }
-    return 0;
 }
 
 
