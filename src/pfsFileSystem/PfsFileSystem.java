@@ -120,10 +120,11 @@ public class PfsFileSystem {
                             System.out.println(fcb[0].toString());
 
                             //  write fcb to pfs
-                            //  1 - set pointer to the current block
-                            //  reset the pointer to the begining
+                            writeFcbToPFs(pfsFile, fcb[0]);
 
-
+                            //  ------------------ write data to pfs -----------------
+                            
+                            //  ------------------ write data to fcb -----------------
                         } else if (fcb[1] == null) {
 
                             //select fcb 2
@@ -204,6 +205,45 @@ public class PfsFileSystem {
             }
 
         }
+    }
+
+    /*
+        writes the value of the fcb to the pfs file
+     */
+    private static void writeFcbToPFs(RandomAccessFile pfsFile, Fcb fcb) {
+        resetFilePointer();
+        movePointerToFcbBlock(pfsFile);
+        writeDataToPfsBlock(fcb);
+        resetFilePointer();
+    }
+
+    /**
+     * writes the data to the pfs file starting from the pointer
+     * specified by the user
+     * @param fcb
+     */
+    private static void writeDataToPfsBlock(Fcb fcb) {
+        try {
+            // 3 write fcb to file
+            pfsFile.write(fcb.toByteData());
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * moves the pointer to the fcb position
+     * @param pfsFile
+     */
+    private static void movePointerToFcbBlock(RandomAccessFile pfsFile) {
+        try {
+            //  set the pointer to the fcb block
+            pfsFile.seek((long) fcb[0].getStartBlockId() * PFS_BLOCK_SIZE);
+
+        } catch(IOException ex) {
+            ex.printStackTrace();
+        }
+
     }
 
     /**
