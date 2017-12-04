@@ -20,6 +20,8 @@ public class Fcb {
                int startBlockId,
                int endBlockId,
                int numBlocks,
+               String createTime,
+               String createDate,
                String remarks) {
 
         this.fileName = fileName;
@@ -27,6 +29,8 @@ public class Fcb {
         this.startBlockId = startBlockId;
         this.endBlockId = endBlockId;
         this.numBlocks = numBlocks;
+        this.createTime = createTime;
+        this.createDate = createDate;
         this.remarks = remarks;
     }
 
@@ -42,6 +46,8 @@ public class Fcb {
                 ", startBlockId=" + startBlockId +
                 ", endBlockId=" + endBlockId +
                 ", numBlocks=" + numBlocks +
+                ", createTime=" + createTime +
+                ", createDate=" + createDate +
                 ", remarks='" + remarks + '\'' +
                 '}';
     }
@@ -57,6 +63,8 @@ public class Fcb {
                 getStartBlockId() + "," +
                 getEndBlockId() + "," +
                 getNumBlocks() + "," +
+                getCreateTime() + "," +
+                getCreateDate() + "," +
                 getRemarks() + ",";
     }
 
@@ -123,6 +131,22 @@ public class Fcb {
         this.remarks = remarks;
     }
 
+    public String getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(String createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(String createDate) {
+        this.createDate = createDate;
+    }
+
     /**
      * member varibales
      *
@@ -133,4 +157,6 @@ public class Fcb {
     private int endBlockId;
     private int numBlocks;
     private String remarks;
+    private String createTime;
+    private String createDate;
 }
