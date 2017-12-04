@@ -1,7 +1,11 @@
 package pfsFileSystem;
 
 import java.io.*;
+import java.text.Format;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * The main program
@@ -16,6 +20,10 @@ public class PfsFileSystem {
     private static final int RESERVED_BLOCKS = 3;
     private static final int EMPTY_BLOCK = -1;
     private static FsManager fsManager = null;
+    private static final int BLOCK_ONE = 1;
+    private static final int BLOCK_TWO = 2;
+    private static Fcb[] fcb;
+    private static int _currentFcb = 0;
 
 
 
@@ -25,8 +33,18 @@ public class PfsFileSystem {
         String command;            //indicates what command the user intends to execute
         String fileName;           //indicates the file which the user intends to manipulate
 
+        //  position trackers for block1
+        int _startBlockId_1;
+        int _endBlockId_1;
+
+        //  position trackers for block2
+        int _startBlockId_2 = -1;
+        int _endBlockId_2;
+
+
+
         //  the file control blocks
-        Fcb[] fcb = new Fcb[2];
+        fcb = new Fcb[2];
 
         //  make terminal logic
         while (true) {
@@ -62,24 +80,89 @@ public class PfsFileSystem {
                     //  get the file name from the user input
                     fileName = userInput[1];
 
-
+                    //  get the path to the file
                     String filePathString = "/home/neo/IdeaProjects/PfsFileSystem/" + fileName;
                     File writeFileToPfs = new File(filePathString);
 
-                    //  test ---> check if the file exist
-                    if (isFileExist(writeFileToPfs)) {
-                        System.out.println("file exist");
-                    } else {
-                        System.out.println("file does not exist");
-                    }
+                    //  check file existence and file fit
+                    if (isFileExist(writeFileToPfs)
+                            && isSpaceAvailable(fsManager,writeFileToPfs)) {
 
-                    //  test ---> check if the file exist
-                    if (isSpaceAvailable(fsManager,writeFileToPfs)) {
-                        System.out.println("pfs has space");
-                    } else {
-                        System.out.println("pfs is full");
-                    }
+                        //  pick a particular fcb
+                        if (fcb[0] == null) {
 
+                            //  block tracker
+                            _currentFcb = BLOCK_ONE;
+
+                            //  number of blocks in file
+                            int _numBlocksInFile = getNumBlocks((int)writeFileToPfs.length());
+
+                            //create fcb[0]
+                            String _fileName = writeFileToPfs.getName();
+                            int _fileSize = (int) writeFileToPfs.length();
+                            _startBlockId_1 = allocateStartBlockId(_currentFcb, _numBlocksInFile);
+                            _endBlockId_1 = allocateEndBlockId(_currentFcb, _numBlocksInFile, _startBlockId_2);
+                            String _createTime = getTime();
+                            String _createDate = getDate();
+                            String _remarks = "";
+
+                            //  create fcb
+                            fcb[0] = new Fcb(_fileName,
+                                            _fileSize,
+                                            _startBlockId_1,
+                                            _endBlockId_1,
+                                            _numBlocksInFile,
+                                            _createTime,
+                                            _createDate,
+                                            _remarks);
+
+                            //  dislay fcb
+                            System.out.println(fcb[0].toString());
+
+                            //  write fcb to pfs
+
+
+                        } else if (fcb[1] == null) {
+
+                            //select fcb 2
+                            _currentFcb = BLOCK_TWO;
+
+                            //  number of blocks in file
+                            int _numBlocksInFile = getNumBlocks((int)writeFileToPfs.length());
+
+                            //create fcb[0]
+                            String _fileName = writeFileToPfs.getName();
+                            int _fileSize = (int) writeFileToPfs.length();
+                            _startBlockId_2 = allocateStartBlockId(_currentFcb, _numBlocksInFile);
+                            _endBlockId_2 = allocateEndBlockId(_currentFcb, _numBlocksInFile, _startBlockId_2);
+                            String _createTime = getTime();
+                            String _createDate = getDate();
+                            String _remarks = "";
+
+                            //  create fcb
+                            fcb[1] = new Fcb(_fileName,
+                                    _fileSize,
+                                    _startBlockId_2,
+                                    _endBlockId_2,
+                                    _numBlocksInFile,
+                                    _createTime,
+                                    _createDate,
+                                    _remarks);
+
+                            //  dislay fcb
+                            System.out.println(fcb[1].toString());
+
+                            //create fcb[1
+                        } else {
+
+                            System.out.println("Pfs is full");
+                            break;
+                        }
+
+                        //  test
+                        System.out.println("can write file to pfs");
+                        //create pfs and write to file
+                    }
                     break;
 
                 //  get the data from pfs and display in console
@@ -234,4 +317,75 @@ public class PfsFileSystem {
     private static boolean isSpaceAvailable(FsManager fsManager, File writeFileToPfs) {
         return  writeFileToPfs.length() < (fsManager.availableBlockCount * PFS_BLOCK_SIZE);
     }
+
+
+    /**
+     * allocates a start block id to the caller
+     * @param _currentBlock
+     * @param _numBlocks
+     * @return
+     */
+    private static int allocateStartBlockId(int _currentBlock, int _numBlocks) {
+        if (_currentBlock == BLOCK_ONE) {
+            return 3;
+        } else if (_currentBlock == BLOCK_TWO) {
+            return (_numBlocks) + 1;
+        } else {
+            return -1;
+        }
+    }
+
+    /**
+     * allocates a start block id to the caller
+     * @param _currentBlock
+     * @param _numBlocks
+     * @return
+     */
+    private static int allocateEndBlockId(int _currentBlock, int _numBlocks, int _startBlockid_2) {
+        if (_currentBlock == BLOCK_ONE) {
+            return 3 + _numBlocks;
+        } else if (_currentBlock == BLOCK_TWO) {
+                return _startBlockid_2 + _numBlocks;
+        } else {
+            return -1;
+        }
+    }
+
+    /**
+     * returns the number of blocks required to save a specific file
+     * the value is == (fileSize // PFS_BLoCK_SIZE
+     * @param fileSize
+     * @return
+     */
+    private static int getNumBlocks(int fileSize) {
+        int _blockSize = 0;
+        if (fileSize < 1) {
+            return 1;
+        } else {
+            _blockSize = (fileSize) / PFS_BLOCK_SIZE;
+            return ++_blockSize;
+        }
+    }
+
+    /**
+     * returns the current time
+     * @return
+     */
+    private static String getTime() {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("h:MMaa");
+        String currentTime = sdf.format(cal.getTime());
+        return currentTime;
+    }
+
+    /**
+     * returns the current date
+     * @return
+     */
+    private static String getDate() {
+        Format formatter = new SimpleDateFormat("EEE dd MMMM YYYY");
+        String s = formatter.format(new Date());
+        return s;
+    }
+
 }
