@@ -121,6 +121,10 @@ public class PfsFileSystem {
                             //  dislay fcb
                             System.out.println(fcb[0].toString());
 
+                            //  decrement the available space in the fsmanager
+                            int _newAvailableBlockCount = (fsManager.getAvailableBlockCount() - fcb[0].getNumBlocks());
+                            fsManager.setAvailableBlockCount(_newAvailableBlockCount);
+
                             //  write fcb to pfs
                             writeFcbToPFs(_currentFcb, pfsFile, fcb[0]);
 
@@ -164,6 +168,10 @@ public class PfsFileSystem {
 
                             //  dislay fcb
                             System.out.println(fcb[1].toString());
+
+                            //  decrement the available space in the fsmanager
+                            int _newAvailableBlockCount = (fsManager.getAvailableBlockCount() - fcb[0].getNumBlocks());
+                            fsManager.setAvailableBlockCount(_newAvailableBlockCount);
 
                             //  write fcb to pfs
                             writeFcbToPFs(_currentFcb, pfsFile, fcb[1]);
