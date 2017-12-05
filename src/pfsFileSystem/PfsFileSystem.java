@@ -219,6 +219,11 @@ public class PfsFileSystem {
 
                     break;
 
+                    // delete the pfs file
+                case "kill":
+                    killPfsFileSystem();
+                    break;
+
                 //  end the program if the user enters exit
                 case "exit":
                     displayExitMessage();
@@ -517,6 +522,22 @@ public class PfsFileSystem {
         Format formatter = new SimpleDateFormat("EEE dd MMMM YYYY");
         String s = formatter.format(new Date());
         return s;
+    }
+
+    /**
+     * deletes the entire pfs file system
+     */
+    private static void killPfsFileSystem() {
+        try{
+            File file = new File("PFS");
+            if(file.delete()){
+                System.out.println(file.getName() + " is deleted!");
+            }else{
+                System.out.println("Delete operation failed - Pfs file does not exist.");
+            }
+        }catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
 }
