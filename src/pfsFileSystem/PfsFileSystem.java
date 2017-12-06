@@ -255,11 +255,79 @@ public class PfsFileSystem {
 
                 //  remove the file from pfs
                 case "rm":
+                    //  get the file name from the user input
+                    fileName = userInput[1];
 
+                    //  get the path to the file
+                    filePathString = "/home/neo/IdeaProjects/PfsFileSystem/" + fileName;
+                    writeFileToPfs = new File(filePathString);
+
+                    if (fcb[0] != null) {
+                        //  check if the file exist
+                        if (isFileExist(writeFileToPfs)) {
+                            //  check if the file is in fcb[0]
+                            if (writeFileToPfs.getName().contains(fcb[0].getFileName())) {
+                                //  reset the size of available blocks
+                                fsManager.setAvailableBlockCount(fsManager.getAvailableBlockCount() + fcb[0].getNumBlocks());
+                                //  set the fcb to empty
+                                fcb[0] = null;
+                            } else {
+                                System.out.println("File Does not Exist");
+                            }
+
+                        }
+
+                    } else if (fcb[1] != null) {
+                        if (isFileExist(writeFileToPfs)) {
+                            //  check if the file is in fcb[0]
+                            if (writeFileToPfs.getName().contains(fcb[1].getFileName())) {
+                                //  reset the size of available blocks
+                                fsManager.setAvailableBlockCount(fsManager.getAvailableBlockCount() + fcb[1].getNumBlocks());
+                                //  set the fcb to empty
+                                fcb[1] = null;
+                            } else {
+                                System.out.println("File Does not Exist");
+                            }
+                        }
+                    }
                     break;
 
                 //  put the remark in the fcb
                 case "putr":
+
+                    //  get the file name from the user input
+                    fileName = userInput[1];
+
+                    //  get the remarks
+                    String _remarks = null;
+
+                    try {
+                        _remarks = userInput[2];
+
+                        //  get the path to the file
+                        filePathString = "/home/neo/IdeaProjects/PfsFileSystem/" + fileName;
+                        writeFileToPfs = new File(filePathString);
+
+                        if (fcb[0] != null && _remarks != null) {
+                            //  check if the file exist
+                            if (isFileExist(writeFileToPfs)) {
+                                //  check if the file is in fcb[0]
+                                if (writeFileToPfs.getName().contains(fcb[0].getFileName())) {
+
+                                    //  insert the remarks here
+                                    fcb[0].setRemarks(_remarks);
+
+                                } else {
+                                    System.out.println("File Does not Exist");
+                                }
+
+                            }
+
+                        }
+                    } catch (NullPointerException ex) {
+                        ex.printStackTrace();
+                        System.out.println("Please enter a remark");
+                    }
 
                     break;
 
@@ -286,6 +354,7 @@ public class PfsFileSystem {
 
         }
     }
+
 
     /**
      * displays the entire content of the file to the

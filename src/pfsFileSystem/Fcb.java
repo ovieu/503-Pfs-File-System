@@ -78,7 +78,8 @@ public class Fcb {
         return getFileName() + "\t" +
                 getFileSize() + "\t" +
                 getCreateTime() + "\t" +
-                getCreateDate();
+                getCreateDate()+ "\t" +
+                getRemarks();
     }
     /**
      * returns the details of the fcb in byte format
