@@ -26,7 +26,8 @@ public class PfsFileSystem {
     private static final int BLOCK_TWO = 2;
     private static Fcb[] fcb;
     private static int _currentFcb = 0;
-
+    private static String _dataOneFilePathString = null;
+    private static String _dataTwoFilePathString = null;
 
 
     public static void main(String args[]) {
@@ -42,6 +43,9 @@ public class PfsFileSystem {
         //  position trackers for block2
         int _startBlockId_2 = -1;
         int _endBlockId_2;
+
+        //  test byte
+        byte[] _testDataByteFromPfs = null;
 
 
 
@@ -84,11 +88,12 @@ public class PfsFileSystem {
 
                     //  get the path to the file
                     String filePathString = "/home/neo/IdeaProjects/PfsFileSystem/" + fileName;
+                    _dataOneFilePathString = filePathString;
                     File writeFileToPfs = new File(filePathString);
 
                     //  check file existence and file fit
                     if (isFileExist(writeFileToPfs)
-                            && isSpaceAvailable(fsManager,writeFileToPfs)) {
+                            && isSpaceAvailable(fsManager, writeFileToPfs)) {
 
                         //  pick a particular fcb
                         if (fcb[0] == null) {
@@ -97,7 +102,7 @@ public class PfsFileSystem {
                             _currentFcb = BLOCK_ONE;
 
                             //  number of blocks in file
-                            int _numBlocksInFile = getNumBlocks((int)writeFileToPfs.length());
+                            int _numBlocksInFile = getNumBlocks((int) writeFileToPfs.length());
 
                             //create fcb[0]
                             String _fileName = writeFileToPfs.getName();
@@ -110,13 +115,13 @@ public class PfsFileSystem {
 
                             //  create fcb
                             fcb[0] = new Fcb(_fileName,
-                                            _fileSize,
-                                            _startBlockId_1,
-                                            _endBlockId_1,
-                                            _numBlocksInFile,
-                                            _createTime,
-                                            _createDate,
-                                            _remarks);
+                                    _fileSize,
+                                    _startBlockId_1,
+                                    _endBlockId_1,
+                                    _numBlocksInFile,
+                                    _createTime,
+                                    _createDate,
+                                    _remarks);
 
                             //  dislay fcb
                             System.out.println(fcb[0].toString());
@@ -125,6 +130,9 @@ public class PfsFileSystem {
                             int _newAvailableBlockCount = (fsManager.getAvailableBlockCount() - fcb[0].getNumBlocks());
                             fsManager.setAvailableBlockCount(_newAvailableBlockCount);
 
+                            //  write new info to fsManger
+                            writeFsManagerInBytesToPfs(fsManager,pfsFile);
+
                             //  write fcb to pfs
                             writeFcbToPFs(_currentFcb, pfsFile, fcb[0]);
 
@@ -132,8 +140,11 @@ public class PfsFileSystem {
                             //  convert file to byte[]
                             byte[] _dataOneInByte = getDataInBytes(filePathString);
 
+                            //  test byte form pfs
+                            _testDataByteFromPfs = _dataOneInByte;
+
                             //  test the output of the bytes
-                            System.out.println( "the data is: " + Arrays.toString(_dataOneInByte));
+                            System.out.println("the data is: " + Arrays.toString(_dataOneInByte));
 
                             //  write file to pfs
                             writeDataInBytesToPfs(pfsFile, fcb[0], _dataOneInByte);
@@ -145,7 +156,7 @@ public class PfsFileSystem {
                             _currentFcb = BLOCK_TWO;
 
                             //  number of blocks in file
-                            int _numBlocksInFile = getNumBlocks((int)writeFileToPfs.length());
+                            int _numBlocksInFile = getNumBlocks((int) writeFileToPfs.length());
 
                             //create fcb[0]
                             String _fileName = writeFileToPfs.getName();
@@ -173,6 +184,9 @@ public class PfsFileSystem {
                             int _newAvailableBlockCount = (fsManager.getAvailableBlockCount() - fcb[0].getNumBlocks());
                             fsManager.setAvailableBlockCount(_newAvailableBlockCount);
 
+                            //  write new info to fsManger
+                            writeFsManagerInBytesToPfs(fsManager,pfsFile);
+
                             //  write fcb to pfs
                             writeFcbToPFs(_currentFcb, pfsFile, fcb[1]);
 
@@ -181,7 +195,7 @@ public class PfsFileSystem {
                             byte[] _dataTwoInByte = getDataInBytes(filePathString);
 
                             //  test the output of the bytes
-                            System.out.println( "the data is: " + Arrays.toString(_dataTwoInByte));
+                            System.out.println("the data is: " + Arrays.toString(_dataTwoInByte));
 
                             //  write file to pfs
                             writeDataInBytesToPfs(pfsFile, fcb[1], _dataTwoInByte);
@@ -197,16 +211,43 @@ public class PfsFileSystem {
                         System.out.println("can write file to pfs");
                         //create pfs and write to file
                     }
+
                     break;
 
                 //  get the data from pfs and display in console
                 case "get":
 
+                    //  get the file name from the user input
+                    fileName = userInput[1];
+
+                    //  get the path to the file
+                    filePathString = "/home/neo/IdeaProjects/PfsFileSystem/" + fileName;
+                    writeFileToPfs = new File(filePathString);
+
+                    //  check if the file exist
+                    if (isFileExist(writeFileToPfs)) {
+
+                        //  check if the file is in fcb[0]
+                        if (writeFileToPfs.getName() == fcb[0].getFileName()) {
+
+                            for (int i = 0; i < _testDataByteFromPfs.length; i++) {
+
+
+                            }
+
+                        } else {
+
+                        }
+                    } else {
+                        System.out.println("File doesn't Exist");
+                    }
+
+
                     break;
 
                 //  display all the files in pfs
                 case "dir":
-
+                    displayDirectory();
                     break;
 
                 //  remove the file from pfs
@@ -538,6 +579,27 @@ public class PfsFileSystem {
         }catch(Exception e){
             e.printStackTrace();
         }
+    }
+
+    private static void displayDirectory() {
+        //  if fcb one and two are null display empty fcb
+        //  check if fcb one is not null and call display file
+        //  check if fcb two is not null and display file
+
+        if (fcb[0] == null && fcb[1] == null) {
+            System.out.println("--------- ------ ------ ------");
+        }
+
+        if(fcb[0] != null) {
+            //  display file's info on fcb
+            System.out.println(fcb[0].toDir());
+        }
+
+        if (fcb[1] != null) {
+            //  display file's info on fcb
+            System.out.println(fcb[1].toDir());
+        }
+
     }
 
 }

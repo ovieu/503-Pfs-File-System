@@ -68,6 +68,18 @@ public class Fcb {
                 getRemarks() + ",";
     }
 
+
+    /**
+     * dislpays the details of the fcb as comma seperated
+     * values. These values are then written to the pfs
+     * @return
+     */
+    public String toDir() {
+        return getFileName() + "\t" +
+                getFileSize() + "\t" +
+                getCreateTime() + "\t" +
+                getCreateDate();
+    }
     /**
      * returns the details of the fcb in byte format
      * that would be written directly to the pfs
