@@ -216,7 +216,6 @@ public class PfsFileSystem {
 
                 //  get the data from pfs and display in console
                 case "get":
-
                     //  get the file name from the user input
                     fileName = userInput[1];
 
@@ -224,24 +223,28 @@ public class PfsFileSystem {
                     filePathString = "/home/neo/IdeaProjects/PfsFileSystem/" + fileName;
                     writeFileToPfs = new File(filePathString);
 
-                    //  check if the file exist
-                    if (isFileExist(writeFileToPfs)) {
-
-                        //  check if the file is in fcb[0]
-                        if (writeFileToPfs.getName() == fcb[0].getFileName()) {
-
-                            for (int i = 0; i < _testDataByteFromPfs.length; i++) {
-
-
+                    if (fcb[0] != null) {
+                        //  check if the file exist
+                        if (isFileExist(writeFileToPfs)) {
+                            //  check if the file is in fcb[0]
+                            if (writeFileToPfs.getName().contains(fcb[0].getFileName())) {
+                                displayFile(filePathString);
+                            } else {
+                                System.out.println("File Does not Exist");
                             }
 
-                        } else {
-
                         }
-                    } else {
-                        System.out.println("File doesn't Exist");
-                    }
 
+                    } else if (fcb[1] != null) {
+                        if (isFileExist(writeFileToPfs)) {
+                            //  check if the file is in fcb[0]
+                            if (writeFileToPfs.getName().contains(fcb[1].getFileName())) {
+                                displayFile(filePathString);
+                            } else {
+                                System.out.println("File Does not Exist");
+                            }
+                        }
+                    }
 
                     break;
 
@@ -281,6 +284,22 @@ public class PfsFileSystem {
                     break;
             }
 
+        }
+    }
+
+    /**
+     * displays the entire content of the file to the
+     * terminal output
+     * @param file
+     */
+    private static void displayFile(String filePathString) {
+        try (BufferedReader br = new BufferedReader(new FileReader(filePathString))) {
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                System.out.println(line);
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
         }
     }
 
