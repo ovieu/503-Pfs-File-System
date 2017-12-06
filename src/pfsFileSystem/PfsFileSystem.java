@@ -124,7 +124,7 @@ public class PfsFileSystem {
                                     _remarks);
 
                             //  dislay fcb
-                            System.out.println(fcb[0].toString());
+                            //  System.out.println(fcb[0].toString());
 
                             //  decrement the available space in the fsmanager
                             int _newAvailableBlockCount = (fsManager.getAvailableBlockCount() - fcb[0].getNumBlocks());
@@ -140,11 +140,8 @@ public class PfsFileSystem {
                             //  convert file to byte[]
                             byte[] _dataOneInByte = getDataInBytes(filePathString);
 
-                            //  test byte form pfs
-                            _testDataByteFromPfs = _dataOneInByte;
-
                             //  test the output of the bytes
-                            System.out.println("the data is: " + Arrays.toString(_dataOneInByte));
+                            //  System.out.println("the data is: " + Arrays.toString(_dataOneInByte));
 
                             //  write file to pfs
                             writeDataInBytesToPfs(pfsFile, fcb[0], _dataOneInByte);
@@ -178,7 +175,7 @@ public class PfsFileSystem {
                                     _remarks);
 
                             //  dislay fcb
-                            System.out.println(fcb[1].toString());
+                            //  System.out.println(fcb[1].toString());
 
                             //  decrement the available space in the fsmanager
                             int _newAvailableBlockCount = (fsManager.getAvailableBlockCount() - fcb[0].getNumBlocks());
@@ -195,7 +192,7 @@ public class PfsFileSystem {
                             byte[] _dataTwoInByte = getDataInBytes(filePathString);
 
                             //  test the output of the bytes
-                            System.out.println("the data is: " + Arrays.toString(_dataTwoInByte));
+                            //  System.out.println("the data is: " + Arrays.toString(_dataTwoInByte));
 
                             //  write file to pfs
                             writeDataInBytesToPfs(pfsFile, fcb[1], _dataTwoInByte);
@@ -208,7 +205,7 @@ public class PfsFileSystem {
                         }
 
                         //  test
-                        System.out.println("can write file to pfs");
+                        //  System.out.println("can write file to pfs");
                         //create pfs and write to file
                     }
 
@@ -223,7 +220,7 @@ public class PfsFileSystem {
                     filePathString = "/home/neo/IdeaProjects/PfsFileSystem/" + fileName;
                     writeFileToPfs = new File(filePathString);
 
-                    if (fcb[0] != null) {
+                    if (writeFileToPfs.getName().contains(fcb[0].getFileName())) {
                         //  check if the file exist
                         if (isFileExist(writeFileToPfs)) {
                             //  check if the file is in fcb[0]
@@ -235,7 +232,7 @@ public class PfsFileSystem {
 
                         }
 
-                    } else if (fcb[1] != null) {
+                    } else if (writeFileToPfs.getName().contains(fcb[1].getFileName())) {
                         if (isFileExist(writeFileToPfs)) {
                             //  check if the file is in fcb[0]
                             if (writeFileToPfs.getName().contains(fcb[1].getFileName())) {
@@ -563,7 +560,7 @@ public class PfsFileSystem {
     private static boolean isFileExist(File writeFileToPfs) {
         if (writeFileToPfs.exists()) {
             //  test code
-            System.out.println("File exist");
+            //System.out.println("File exist");
             return true;
         } else {
             System.out.println("File dose not exist");
